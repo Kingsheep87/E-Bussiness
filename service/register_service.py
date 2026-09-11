@@ -6,6 +6,7 @@
 
 from DAO.register_DAO import RegisterDAO
 from model.register_model import RegisterRequest
+from utils.logger import logger
 
 
 
@@ -13,10 +14,11 @@ class RegisterService:
 
     @staticmethod
     def register_user(data: RegisterRequest) -> dict:
-
+        logger.info(f"Service: Starting registration process for username: '{data.username}'")
         # Check username if exists
         existing_user = RegisterDAO.get_user_by_name(data.username)
         if existing_user:
+            logger.warning(f"Service: Registration failed - Username '{data.username}' already exists.")
             return {
                 "success": False,
                 "code": 400,
@@ -25,6 +27,7 @@ class RegisterService:
 
 
         # Run sql to insert data into DB
+        logger.warning(f"Service: Registration failed - Username '{data.username}' already exists.")
         new_user_id = RegisterDAO.create_new_user(data)
 
         return {

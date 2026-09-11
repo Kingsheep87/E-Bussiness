@@ -10,6 +10,8 @@ from model.products_model import ProductCreate, ProductsRequestUpdate, ProductQu
 from service.products_service import ProductsService
 from utils.response import BaseResponse
 from utils.auth import get_current_user
+from utils.logger import logger
+
 
 
 
@@ -28,7 +30,10 @@ def query_products_api(query: ProductQuery):
     - Filter products based on search criteria such as name or category.
     - Public endpoint (No JWT Token required).
     """
-    return ProductsService.get_product(query)
+    logger.info(f"API Request: Querying products with criteria: {query}")
+    res = ProductsService.get_product(query)
+    logger.info("API Response: Product query executed successfully.")
+    return res
 
 
 # 2. Create new products
@@ -42,7 +47,10 @@ def create_product_api(
     - Adds a new product item to the catalog.
     - **Requires JWT Bearer Token** in Authorization header.
     """
-    return ProductsService.add_product(data)
+    logger.info(f"API Request: Create product requested by user: {current_user}")
+    res = ProductsService.add_product(data)
+    logger.info("API Response: Create product process completed.")
+    return res
 
 
 # 3.Update product
@@ -56,7 +64,10 @@ def update_product_api(
     - Modifies existing product information.
     - **Requires JWT Bearer Token** in Authorization header.
     """
-    return ProductsService.modify_product(data)
+    logger.info(f"API Request: Update product requested by user: {current_user}")
+    res = ProductsService.modify_product(data)
+    logger.info("API Response: Update product process completed.")
+    return res
 
 
 # 4.Delete product
@@ -70,4 +81,7 @@ def delete_products_api(
     - Deletes one or multiple products by their unique IDs.
     - **Requires JWT Bearer Token** in Authorization header.
     """
-    return ProductsService.del_product(ids)
+    logger.info(f"API Request: Batch delete products with IDs {ids} requested by user: {current_user}")
+    res = ProductsService.del_product(ids)
+    logger.info(f"API Response: Batch delete completed for IDs {ids}.")
+    return res

@@ -9,6 +9,8 @@ from model.orders_model import OrderCreateRequest, PaymentRequest, OrderDetailRe
 from service.orders_service import OrdersService
 from utils.auth import get_current_user
 from utils.response import BaseResponse
+from utils.logger import logger
+
 
 
 
@@ -30,7 +32,10 @@ def create_order_api(
     - Sets initial status to `PENDING_PAY`.
     - **Requires JWT Bearer Token**.
     """
-    return OrdersService.create_order(username=current_user, data=data)
+    logger.info(f"API Request: Payment process for order ID '{data.order_id}' requested by user: {current_user}")
+    res = OrdersService.process_payment(username=current_user, data=data)
+    logger.info(f"API Response: Payment request processed for order ID '{data.order_id}'")
+    return res
 
 
 # 2. Process Order Payment (Inserts payments & updates orders status)
@@ -54,4 +59,7 @@ def get_order_detail_api(
     - Ensures security by matching `username` with the authenticated token user.
     - **Requires JWT Bearer Token**.
     """
-    return OrdersService.get_order_detail(username=current_user, order_id=order_id)
+    logger.info(f"API Request: Get order details for order ID '{order_id}' by user: {current_user}")
+    res = OrdersService.get_order_detail(username=current_user, order_id=order_id)
+    logger.info(f"API Response: Order details retrieved for order ID '{order_id}'")
+    return res
